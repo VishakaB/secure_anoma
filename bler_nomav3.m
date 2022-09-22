@@ -3,6 +3,7 @@ close all;
 clc;
 %goal: block error rate based latency simulation comparision with
 %analytical
+%% initial parameters
 bler = 0.8;
 
 %% 
@@ -62,9 +63,6 @@ sim_avg_latency = nbretransmissions*delay_transmission;
 fprintf('sim delay %f\n',sim_avg_latency);
 
 %% analytical delay 
-n = 100;%number of bits
-m = 10; %blocklength
-T_sym = 0.007;
 v = rand(1,n);
 u_i = 0.5;
 v_i = 0.1;
