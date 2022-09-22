@@ -71,7 +71,7 @@ zeta = 3;
 s = 1;
 delta_offset = 0.5;
 mu = 10;
-n = 10;%total nbits
+%n = 10;%total nbits
 
 bler_ther_p1 = (2*pi*(2^(2*n/m)-1)/m)^(-1/2);
 delta = rand(n,n);
