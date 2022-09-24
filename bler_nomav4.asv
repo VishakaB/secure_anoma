@@ -29,9 +29,8 @@ final_simula_latency = zeros(length(transmit_snrdb_vec),1);
 for idx =1 : length(transmit_snrdb_vec)
     
     ENodB = transmit_snrdb_vec(idx);%snr
-    
+    P_k(1) = 10^(ENodB/10)*noisepower;%tx power
     for k = 1:K  %user index
-      P_k(k) = 10^(ENodB/10)*noisepower;%tx power
       for s = 1:m %symbol index %for each symbol
         for zeta = s-1:1:s+1 %neighbor symbol index
              if(zeta>1)
@@ -63,13 +62,13 @@ for idx =1 : length(transmit_snrdb_vec)
         reverse_delta_mat(2:K,:) = rev_time_offset.*ones(K-1,m);%A1, A2
 
         del_offset = delta_mat(k,s);
-        num1 = P_k(k);
-        den1 = ((1-deltaval+1)*del_offset*P_k(k)/2+w_j*P_j*alpha_j^2 ...
+        num1 = P_k;
+        den1 = ((1-deltaval+1)*del_offset*P_k/2+w_j*P_j*alpha_j^2 ...
         +noisepower^2);
         bler_ther_p1 = (2*pi*(2^(2*n/m)-1)/m)^(-1/2);
         bler_ther_p2 = (u_i - v_i);
         bler_ther_p3 = (num1/den1)^2*(exp(-v_i/(num1/den1))/v_i^2 ...
-            - exp(-u_i/(num1/den1))/u_i^2);%check this
+            - exp(-u_i/(num1/den1))/u_i^2)%check this
 
         bler_ther(k) = bler_ther_p1*(bler_ther_p2+bler_ther_p3);
 
@@ -80,7 +79,7 @@ for idx =1 : length(transmit_snrdb_vec)
     end
     final_analy_latency(idx) = mean(avg_analy_latency(idx,k),2);
 end
-final_analy_latency
+
 %% simulation delay 
 %for reps = 1:10%check here 
 %nbrandom simulations 
@@ -90,7 +89,7 @@ for k = 1:K
 %generate a sequence of 1s and 0s with 0.8% of 1s randomly distributed 
 %1s = error block, 0s = no error block (correct)
 numberOfElements = m; % Whatever.
-percentageOfOnes = abs(mean(bler_ther(k)))*10; % Whatever.
+percentageOfOnes = abs(mean(bler_ther))*10; % Whatever.
 numberOfOnes = round(numberOfElements * percentageOfOnes / 100);
 % Make initial signal with proper number of 0's and 1's.
 blckstream = [ones(1, numberOfOnes), zeros(1, numberOfElements - numberOfOnes)];
@@ -144,7 +143,7 @@ end
 
 %% plots
 grid on;
-%plot(transmit_snrdb_vec,(final_simula_latency),'--r')
+plot(transmit_snrdb_vec,(final_simula_latency),'--r')
 hold on 
 plot(transmit_snrdb_vec,(final_analy_latency),'-b')
 xlabel('SNR') 
