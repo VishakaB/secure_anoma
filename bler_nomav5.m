@@ -1,4 +1,4 @@
-%start_date:22.09.2022
+%start_date: 22.09.2022
 %last update: 22.09.2022
 
 %goal: average latency vs transmit SNR
@@ -9,11 +9,17 @@ close all;
 %% initial parameters
 transmit_snrdb_vec = linspace(10,20,20);
 noisepower = 0.1;
-u_i = 5;
-v_i = 2;
+num1 = 1;
+k = 80;%number of information bits in a block
+m = 100;%number of total bits (information+cyclic prefix) in a block 
+x_i = sqrt(2*pi*(2^(2*k/m)-1)/m); 
+tau_i = (2^(2*k/m)-1);
+v_i = tau_i - 1/(2*x_i); 
+u_i = tau_i + 1/(2*x_i); 
+%u_i = 5;%update according to model
+%v_i = 2;
 mu = 0.7;
-n = 1000;%number of bits
-m = 100; %blocklength
+n = 1000;%total number of bits transmitted 
 v = rand(1,n);
 K = 3;%nbusers
 sumc = zeros(K,1); 
@@ -22,6 +28,7 @@ w_j = 0.7;
 P_j = 1;
 alpha_j = 0.9;
 T_sym = 0.007;
+
 final_analy_latency = zeros(length(transmit_snrdb_vec),1);
 final_simula_latency = zeros(length(transmit_snrdb_vec),1);
 
@@ -46,7 +53,7 @@ for idx =1 : length(transmit_snrdb_vec)
         else
           deltaval = 0;
         end
-
+  
         clear delta_mat;
         clear reverse_delta_mat;
         %time offsets between users 
@@ -84,7 +91,7 @@ final_analy_latency
 %% simulation delay 
 %for reps = 1:10%check here 
 %nbrandom simulations 
-for idx =1 : length(transmit_snrdb_vec)
+for idx = 1 : length(transmit_snrdb_vec)
 %% 
 for k = 1:K  
 %generate a sequence of 1s and 0s with 0.8% of 1s randomly distributed 
@@ -143,9 +150,10 @@ final_simula_latency(idx)= mean(sim_avg_latency(idx),2);
 end
 
 %% plots
+figure (1)
 grid on;
 %plot(transmit_snrdb_vec,(final_simula_latency),'--r')
-hold on 
-plot(transmit_snrdb_vec,(final_analy_latency),'-b')
-xlabel('SNR') 
-ylabel('avg latency')
+hold on; 
+plot(transmit_snrdb_vec,(final_analy_latency),'-b');
+xlabel('SNR'); 
+ylabel('avg latency');

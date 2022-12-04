@@ -144,9 +144,10 @@ end
 
 %% plots
 close all
+figure (1)
 grid on;
 %plot(transmit_snrdb_vec,(final_simula_latency),'--r')
-hold on 
+% hold on 
 plot(transmit_snrdb_vec,smooth(smooth(final_analy_latency)),'-b')
 xlabel('SNR') 
 ylabel('avg latency')

@@ -141,7 +141,7 @@ sim_avg_latency(idx,k) = nbretransmissions*delay_transmission;
 end%end k=1:K
 final_simula_latency(idx)= mean(sim_avg_latency(idx),2);
 end
-
+figure (1)
 %% plots
 grid on;
 %plot(transmit_snrdb_vec,(final_simula_latency),'--r')
